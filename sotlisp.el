@@ -31,12 +31,12 @@
 ;;
 ;; A large number of abbrevs which expand function
 ;; initials to their name.  A few examples:
-;; 
+;;
 ;; - wcb -> with-current-buffer
 ;; - i -> insert
 ;; - r -> require '
 ;; - a -> and
-;; 
+;;
 ;; However, these are defined in a way such that they ONLY expand in a
 ;; place where you would use a function, so hitting SPC after "(r"
 ;; expands to "(require '", but hitting SPC after "(delete-region r" will
@@ -50,32 +50,32 @@
 ;; thought-flow" way of writing.  The bindings are as follows, I
 ;; understand these don't fully adhere to conventions, and I'd
 ;; appreaciate suggestions on better bindings.
-;; 
+;;
 ;; - M-RET :: Break line, and insert "()" with point in the middle.
 ;; - C-RET :: Do `forward-up-list', then do M-RET.
-;; 
+;;
 ;; Hitting RET followed by a `(' was one of the most common key sequences
 ;; for me while writing elisp, so giving it a quick-to-hit key was a
 ;; significant improvement.
-;; 
+;;
 ;; - C-c f :: Find function under point.  If it is not defined, create a
 ;; definition for it below the current function and leave point inside.
 ;; - C-c v :: Same, but for variable.
-;; 
+;;
 ;; With these commands, you just write your code as you think of it.  Once
 ;; you hit a "stop-point" of sorts in your tought flow, you hit `C-c f/v`
 ;; on any undefined functions/variables, write their definitions, and hit
 ;; `C-u C-SPC` to go back to the main function.
-;; 
+;;
 ;;; Small Example
 ;;
 ;; With the above (assuming you use something like paredit or
 ;; electric-pair-mode), if you write:
 ;;
 ;;   ( w t b M-RET i SPC text
-;; 
+;;
 ;; You get
-;; 
+;;
 ;;   (with-temp-buffer (insert text))
 
 
@@ -201,14 +201,18 @@ The space char is not included.  Any \"$\" are also removed."
     ("cip" . "called-interactively-p 'any")
     ("csv" . "customize-save-variable '")
     ("d" . "delete-char 1")
-    ("df" . "delete-file ")
+    ("df" . "declare-function ")
     ("dl" . "dolist (it $)")
     ("dk" . "define-key ")
     ("dmp" . "derived-mode-p '")
     ("dr" . "delete-region ")
+    ("dv" . "defvar ")
+    ("dc" . "defcustom ")
+    ("dm" . "defmacro ")
     ("e" . "error \"$\"")
     ("efn" . "expand-file-name ")
     ("f" . "format \"$\"")
+    ("fu" . "funcall ")
     ("fb" . "fboundp '")
     ("fbp" . "fboundp '")
     ("fc" . "forward-char 1")
@@ -222,6 +226,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("gc" . "goto-char ")
     ("gsk" . "global-set-key ")
     ("i" . "insert ")
+    ("ii" . "interactive")
     ("ie" . "ignore-errors ")
     ("k" . "kbd \"$\"")
     ("kb" . "kill-buffer")
@@ -233,23 +238,31 @@ The space char is not included.  Any \"$\" are also removed."
     ("lp" . "listp ")
     ("m" . "message \"$%s\"")
     ("mb" . "match-beginning 0")
+    ("mc" . "mapcar ")
     ("me" . "match-end 0")
     ("ms" . "match-string 0")
+    ("mt" . "mapconcat ")
     ("msnp" . "match-string-no-properties 0")
     ("n" . "not ")
     ("nl" . "forward-line 1")
     ("np" . "numberp ")
     ("ow" . "other-window 1")
     ("p" . "point$")
+    ("pz" . "propertize ")
     ("pa" . "point-max$")
     ("pi" . "point-min$")
     ("r" . "require '")
+    ("ra" . "region-active-p")
+    ("rb" . "region-beginning")
+    ("re" . "region-end")
     ("rh" . "remove-hook '")
     ("rm" . "replace-match \"$\"")
     ("rq" . "regexp-quote \"$\"")
     ("rris" . "replace-regexp-in-string ")
     ("rrs" . "replace-regexp-in-string ")
     ("rs" . "while (search-forward $ nil t)\n(replace-match \"\") nil t)")
+    ("rsf" . "re-search-forward \"$\"")
+    ("rsb" . "re-search-backward \"$\"")
     ("s" . "setq ")
     ("s=" . "string= ")
     ("sb" . "search-backward \"$\"")
@@ -276,8 +289,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("wh" . "while ")
     ("wl" . "window-list nil 'nominibuffer")
     ("wtb" . "with-temp-buffer")
-    ("wtf" . "with-temp-file")
-    )
+    ("wtf" . "with-temp-file"))
   "Alist of (ABBREV . EXPANSION) used by `sotlisp'.")
 
 (defun sotlisp-define-function-abbrev (name expansion)
@@ -492,4 +504,3 @@ With a prefix argument, defines a `defvar' instead of a `defcustom'."
 
 (provide 'sotlisp)
 ;;; sotlisp.el ends here
-
