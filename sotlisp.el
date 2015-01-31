@@ -49,7 +49,7 @@
 ;; It also defines 4 commands, which really fit into this "follow the
 ;; thought-flow" way of writing.  The bindings are as follows, I
 ;; understand these don't fully adhere to conventions, and I'd
-;; appreaciate suggestions on better bindings.
+;; appreciate suggestions on better bindings.
 ;; 
 ;; - M-RET :: Break line, and insert "()" with point in the middle.
 ;; - C-RET :: Do `forward-up-list', then do M-RET.
