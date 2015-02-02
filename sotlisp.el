@@ -80,8 +80,6 @@
 
 
 ;;; Code:
-(eval-when-compile
-  (require 'subr-x))
 
 ;;; Predicates
 (defun sotlisp--auto-paired-p ()
@@ -463,9 +461,10 @@ removes hooks and abbrevs."
         (ignore-errors (forward-sexp -1)
                        (looking-at-p "#'")))
       (thing-at-point 'symbol)
-    (if-let ((fcap (function-called-at-point)))
-        (symbol-name fcap)
-      (thing-at-point 'symbol))))
+    (let ((fcap (function-called-at-point)))
+      (if fcap
+          (symbol-name fcap)
+        (thing-at-point 'symbol)))))
 
 (defun sotlisp-find-or-define-function (&optional prefix)
   "If symbol under point is a defined function, go to it, otherwise define it.
