@@ -6,6 +6,7 @@
 ;; URL: https://github.com/Malabarba/speed-of-thought-lisp
 ;; Keywords: convenience, lisp
 ;; Package-Requires: ((emacs "24.1"))
+;; Version: 1.0
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -317,6 +318,8 @@ The space char is not included.  Any \"$\" are also removed."
     ("wf" . "write-file ")
     ("wh" . "while ")
     ("wl" . "window-list nil 'nominibuffer")
+    ("we" . "window-end")
+    ("ws" . "window-start")
     ("wtb" . "with-temp-buffer")
     ("wtf" . "with-temp-file ")
     )
