@@ -6,7 +6,7 @@
 ;; URL: https://github.com/Malabarba/speed-of-thought-lisp
 ;; Keywords: convenience, lisp
 ;; Package-Requires: ((emacs "24.1"))
-;; Version: 1.0
+;; Version: 1.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -367,7 +367,7 @@ following way:
 
 
 ;;; The global minor-mode
-(defvar speed-of-thought-turn-on-hook '(sotlisp-turn-on-everywhere)
+(defvar speed-of-thought-turn-on-hook '()
   "Hook run once when `speed-of-thought-mode' is enabled.
 Note that `speed-of-thought-mode' is global, so this is not run
 on every buffer.
@@ -375,7 +375,7 @@ on every buffer.
 See `sotlisp-turn-on-everywhere' for an example of what a
 function in this hook should do.")
 
-(defvar speed-of-thought-turn-off-hook '(sotlisp-turn-off-everywhere)
+(defvar speed-of-thought-turn-off-hook '()
   "Hook run once when `speed-of-thought-mode' is disabled.
 Note that `speed-of-thought-mode' is global, so this is not run
 on every buffer.
@@ -384,14 +384,30 @@ See `sotlisp-turn-on-everywhere' for an example of what a
 function in this hook should do.")
 
 ;;;###autoload
-(define-minor-mode speed-of-thought-mode nil nil nil nil
+(define-minor-mode speed-of-thought-mode
+  nil nil nil nil
   :global t
   (run-hooks (if speed-of-thought-mode
                  'speed-of-thought-turn-on-hook
                'speed-of-thought-turn-off-hook)))
 
+;;;###autoload
+(defun speed-of-thought-hook-in (on off)
+  "Add functions ON and OFF to `speed-of-thought-mode' hooks.
+If `speed-of-thought-mode' is already on, call ON."
+  (add-hook 'speed-of-thought-turn-on-hook on)
+  (add-hook 'speed-of-thought-turn-off-hook off)
+  (when speed-of-thought-mode (funcall on)))
+
 
 ;;; The local minor-mode
+(define-minor-mode sotlisp-mode
+  nil nil " SoT"
+  '(([M-return] . sotlisp-newline-and-parentheses)
+    ([C-return] . sotlisp-downlist-newline-and-parentheses)
+    ("\C-cf"    . sotlisp-find-or-define-function)
+    ("\C-cv"    . sotlisp-find-or-define-variable)))
+
 (defun sotlisp-turn-on-everywhere ()
   "Call-once function to turn on sotlisp everywhere.
 Calls `sotlisp-mode' on all `emacs-lisp-mode' buffers, and sets
@@ -402,7 +418,7 @@ up a hook and abbrevs."
           (with-current-buffer b
             (when (derived-mode-p 'emacs-lisp-mode)
               (sotlisp-mode 1))))
-    (buffer-list)))
+        (buffer-list)))
 
 (defun sotlisp-turn-off-everywhere ()
   "Call-once function to turn off sotlisp everywhere.
@@ -414,13 +430,9 @@ removes hooks and abbrevs."
           (with-current-buffer b
             (when (derived-mode-p 'emacs-lisp-mode)
               (sotlisp-mode -1))))
-    (buffer-list)))
+        (buffer-list)))
 
-(define-minor-mode sotlisp-mode nil nil " SoT"
-  '(([M-return] . sotlisp-newline-and-parentheses)
-    ([C-return] . sotlisp-downlist-newline-and-parentheses)
-    ("\C-cf"    . sotlisp-find-or-define-function)
-    ("\C-cv"    . sotlisp-find-or-define-variable)))
+(speed-of-thought-hook-in #'sotlisp-turn-on-everywhere #'sotlisp-turn-off-everywhere)
 
 
 ;;; Commands
