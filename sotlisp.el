@@ -90,16 +90,24 @@
       (bound-and-true-p paredit-mode)
       (bound-and-true-p smartparens-mode)))
 
+(defun sotlisp--looking-back (regexp)
+  (string-match
+   (concat regexp "\\'")
+   (buffer-substring (line-beginning-position) (point))))
+
 (defun sotlisp--function-form-p ()
   "Non-nil if point is at the start of a sexp.
 Specially, avoids matching inside argument lists."
   (and (eq (char-before) ?\()
-       (not (looking-back "(\\(defun\\s-+.*\\|lambda\\s-+\\)("))
+       (not (sotlisp--looking-back "(\\(defun\\s-+.*\\|lambda\\s-+\\)("))
        (not (string-match (rx (syntax symbol)) (string last-command-event)))))
 
 (defun sotlisp--function-quote-p ()
   "Non-nil if point is at a sharp-quote."
-  (looking-back "#'"))
+  (ignore-errors
+    (save-excursion
+      (forward-char -2)
+      (looking-at-p "#'"))))
 
 (defun sotlisp--function-p ()
   "Non-nil if point is at reasonable place for a function name.
