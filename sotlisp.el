@@ -122,8 +122,13 @@ non-nil."
 
 (defun sotlisp--whitespace-p ()
   "Non-nil if current `self-insert'ed char is whitespace."
+  (sotlisp--whitespace-char-p last-command-event))
+(make-obsolete 'sotlisp--whitespace-p 'sotlisp--whitespace-char-p "1.2")
+
+(defun sotlisp--whitespace-char-p (char)
+  "Non-nil if CHAR is has whitespace syntax."
   (ignore-errors
-    (string-match (rx space) (string last-command-event))))
+    (string-match (rx space) (string char))))
 
 
 ;;; Expansion logic
@@ -159,14 +164,14 @@ If it ended in a space and there's a space ahead, delete the
 space ahead."
   ;; Inform `expand-abbrev' that `self-insert-command' should not
   ;; trigger, by returning non-nil on SPC.
-  (when (sotlisp--whitespace-p)
+  (when (sotlisp--whitespace-char-p last-command-event)
     ;; And maybe move out of closing paren if expansion ends with $.
     (if (eq (char-before) ?$)
         (progn (delete-char -1)
                (setq sotlisp--needs-moving nil)
                (sotlisp--maybe-skip-closing-paren))
-      (when (and (string-match (rx space) (string (char-after)))
-                 (string-match (rx space) (string (char-before))))
+      (when (and (sotlisp--whitespace-char-p (char-after))
+                 (sotlisp--whitespace-char-p (char-before)))
         (delete-char 1)))
     t))
 
