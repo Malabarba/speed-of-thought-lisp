@@ -172,16 +172,18 @@ See `sotlisp-define-function-abbrev'."
     (skip-chars-backward (rx alnum))
     (let* ((name (buffer-substring (point) r))
            (expansion (gethash name sotlisp--function-table)))
-      (delete-region (point) r)
-      (if (sotlisp--function-quote-p)
-          ;; After #' use the simple expansion.
-          (insert (sotlisp--simplify-function-expansion expansion))
-        ;; Inside a form, use the full expansion.
-        (insert expansion)
-        (when (string-match "\\$" expansion)
-          (setq sotlisp--needs-moving t))))
-    ;; Must be last.
-    (sotlisp--post-expansion-cleanup)))
+      (if (not expansion)
+          (progn (goto-char r) nil)
+        (delete-region (point) r)
+        (if (sotlisp--function-quote-p)
+            ;; After #' use the simple expansion.
+            (insert (sotlisp--simplify-function-expansion expansion))
+          ;; Inside a form, use the full expansion.
+          (insert expansion)
+          (when (string-match "\\$" expansion)
+            (setq sotlisp--needs-moving t)))
+        ;; Must be last.
+        (sotlisp--post-expansion-cleanup)))))
 
 (put 'sotlisp--expand-function 'no-self-insert t)
 
