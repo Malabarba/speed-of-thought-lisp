@@ -140,6 +140,28 @@ Point is left where the `$' char was.  Does nothing if variable
              (sotlisp--auto-paired-p))
     (forward-char 1)))
 
+(defun sotlisp--post-expansion-cleanup ()
+  "Do some processing conditioned on the expansion done.
+If the command that triggered the expansion was a whitespace
+char, perform the steps below and return t.
+
+If the expansion ended in a $, delete it and call
+`sotlisp--maybe-skip-closing-paren'.
+If it ended in a space and there's a space ahead, delete the
+space ahead."
+  ;; Inform `expand-abbrev' that `self-insert-command' should not
+  ;; trigger, by returning non-nil on SPC.
+  (when (sotlisp--whitespace-p)
+    ;; And maybe move out of closing paren if expansion ends with $.
+    (if (eq (char-before) ?$)
+        (progn (delete-char -1)
+               (setq sotlisp--needs-moving nil)
+               (sotlisp--maybe-skip-closing-paren))
+      (when (and (string-match (rx space) (string (char-after)))
+                 (string-match (rx space) (string (char-before))))
+        (delete-char 1)))
+    t))
+
 (defvar sotlisp--function-table (make-hash-table :test #'equal)
   "Table where function abbrev expansions are stored.")
 
@@ -158,15 +180,8 @@ See `sotlisp-define-function-abbrev'."
         (insert expansion)
         (when (string-match "\\$" expansion)
           (setq sotlisp--needs-moving t))))
-    ;; Inform `expand-abbrev' that `self-insert-command' should not
-    ;; trigger, by returning non-nil on SPC.
-    (when (sotlisp--whitespace-p)
-      ;; And maybe move out of closing paren if expansion ends with $.
-      (when (eq (char-before) ?$)
-        (delete-char -1)
-        (setq sotlisp--needs-moving nil)
-        (sotlisp--maybe-skip-closing-paren))
-      t)))
+    ;; Must be last.
+    (sotlisp--post-expansion-cleanup)))
 
 (put 'sotlisp--expand-function 'no-self-insert t)
 
