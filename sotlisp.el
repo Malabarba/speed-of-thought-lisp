@@ -360,6 +360,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("wl" . "when-let (($))")
     ("we" . "window-end")
     ("ws" . "window-start")
+    ("wsw" . "with-selected-window ")
     ("wtb" . "with-temp-buffer")
     ("wtf" . "with-temp-file ")
     )
