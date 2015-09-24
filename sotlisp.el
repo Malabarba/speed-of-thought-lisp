@@ -597,6 +597,7 @@ With a prefix argument, defines a `defvar' instead of a `defcustom'."
   "Uncomment a sexp around point."
   (interactive "P")
   (let* ((initial-point (point-marker))
+         (inhibit-field-text-motion t)
          (p)
          (end (save-excursion
                 (when (elt (syntax-ppss) 4)
@@ -608,16 +609,18 @@ With a prefix argument, defines a `defvar' instead of a `defcustom'."
                 (point-marker)))
          (beg (save-excursion
                 (forward-line 0)
-                (while (= end (save-excursion
-                                (comment-forward (point-max))
-                                (point)))
+                (while (and (not (bobp))
+                            (= end (save-excursion
+                                     (comment-forward (point-max))
+                                     (point))))
                   (forward-line -1))
                 (goto-char (line-end-position))
                 (re-search-backward comment-start-skip
                                     (line-beginning-position)
                                     t)
-                (while (looking-at-p comment-start-skip)
-                  (forward-char -1))
+                (ignore-errors
+                  (while (looking-at-p comment-start-skip)
+                    (forward-char -1)))
                 (point-marker))))
     (unless (= beg end)
       (uncomment-region beg end)
@@ -640,7 +643,7 @@ With a prefix argument, defines a `defvar' instead of a `defcustom'."
         ;; If this is a closing delimiter, pull it up.
         (goto-char end)
         (skip-chars-forward "\r\n[:blank:]")
-        (when (= 5 (car (syntax-after (point))))
+        (when (eq 5 (car (syntax-after (point))))
           (delete-indentation))))
     ;; Without a prefix, it's more useful to leave point where
     ;; it was.
