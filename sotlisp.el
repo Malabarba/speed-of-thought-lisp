@@ -620,17 +620,21 @@ With a prefix argument, defines a `defvar' instead of a `defcustom'."
                                     (line-beginning-position)
                                     t)
                 (ignore-errors
-                  (while (looking-at-p comment-start-skip)
-                    (forward-char -1)))
+                  (while (looking-at comment-start-skip)
+                    (forward-char -1))
+                  (unless (looking-at "[\n\r[:blank]]")
+                    (forward-char 1)))
                 (point-marker))))
     (unless (= beg end)
       (uncomment-region beg end)
       (goto-char p)
       ;; Indentify the "top-level" sexp inside the comment.
-      (while (and (ignore-errors (backward-up-list) t)
-                  (>= (point) beg))
-        (skip-chars-backward (rx (syntax expression-prefix)))
-        (setq p (point-marker)))
+      (ignore-errors
+        (while (>= (point) beg)
+          (backward-prefix-chars)
+          (skip-chars-backward "\r\n[:blank:]")
+          (setq p (point-marker))
+          (backward-up-list)))
       ;; Re-comment everything before it. 
       (ignore-errors
         (comment-region beg p))
