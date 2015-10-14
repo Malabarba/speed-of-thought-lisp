@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2014 Free Software Foundation, Inc.
 
-;; Author: Artur Malabarba  <bruce.connor.am@gmail.com>
+;; Author: Artur Malabarba <emacs@endlessparentheses.com>
 ;; URL: https://github.com/Malabarba/speed-of-thought-lisp
 ;; Keywords: convenience, lisp
 ;; Package-Requires: ((emacs "24.1"))
