@@ -80,7 +80,6 @@
 ;; 
 ;;   (with-temp-buffer (insert text))
 
-
 ;;; Code:
 
 ;;; Predicates
@@ -452,7 +451,7 @@ If `speed-of-thought-mode' is already on, call ON."
   nil nil " SoT"
   `(([M-return] . sotlisp-newline-and-parentheses)
     ([C-return] . sotlisp-downlist-newline-and-parentheses)
-    (,(kbd "C-M-;") . ,(if (boundp 'comment-or-uncomment-sexp)
+    (,(kbd "C-M-;") . ,(if (fboundp 'comment-or-uncomment-sexp)
                            #'comment-or-uncomment-sexp
                          #'sotlisp-comment-or-uncomment-sexp))
     ("\C-cf"    . sotlisp-find-or-define-function)
@@ -521,8 +520,9 @@ removes hooks and abbrevs."
   "`push-mark' and move above this defun."
   (push-mark)
   (beginning-of-defun)
-  (when (looking-back "^;;;###autoload\\s-*\n")
-    (forward-line -1)))
+  (forward-line -1)
+  (unless (looking-at "^;;;###autoload\\s-*\n")
+    (forward-line 1)))
 
 (defun sotlisp--function-at-point ()
   "Return name of `function-called-at-point'."
@@ -692,4 +692,3 @@ With a prefix argument N, (un)comment that many sexps."
 
 (provide 'sotlisp)
 ;;; sotlisp.el ends here
-
