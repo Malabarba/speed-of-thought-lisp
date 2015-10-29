@@ -6,7 +6,7 @@
 ;; URL: https://github.com/Malabarba/speed-of-thought-lisp
 ;; Keywords: convenience, lisp
 ;; Package-Requires: ((emacs "24.1"))
-;; Version: 1.4.1
+;; Version: 1.5
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -259,6 +259,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("dfv" . "defvar $ t\n  \"\"")
     ("dk" . "define-key ")
     ("dl" . "dolist (it $)")
+    ("dt" . "dotimes (it $)")
     ("dmp" . "derived-mode-p '")
     ("dm" . "defmacro $ ()\n  \"\"\n  ")
     ("dr" . "delete-region ")
@@ -347,7 +348,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("sf" . "search-forward $ nil 'noerror")
     ("sfr" . "search-forward-regexp $ nil 'noerror")
     ("sic" . "self-insert-command")
-    ("sl" . "string<")
+    ("sl" . "setq-local ")
     ("sm" . "string-match \"$\"")
     ("smd" . "save-match-data")
     ("sn" . "symbol-name ")
