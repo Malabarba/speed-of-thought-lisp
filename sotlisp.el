@@ -98,14 +98,17 @@
   "Non-nil if point is at the start of a sexp.
 Specially, avoids matching inside argument lists."
   (and (eq (char-before) ?\()
-       (not (sotlisp--looking-back "(\\(defun\\s-+.*\\|lambda\\s-+\\)("))
+       (not (sotlisp--looking-back "(\\(defun\\s-+.*\\|\\(lambda\\|dolist\\|dotimes\\)\\s-+\\)("))
        (save-excursion
          (forward-char -1)
-         (backward-up-list)
-         (forward-sexp -1)
-         (not
-          (looking-at-p (rx (* (or (syntax word) (syntax symbol) "-"))
-                            "let" symbol-end))))
+         (condition-case er
+             (progn
+               (backward-up-list)
+               (forward-sexp -1)
+               (not
+                (looking-at-p (rx (* (or (syntax word) (syntax symbol) "-"))
+                                  "let" symbol-end))))
+           (error t)))
        (not (string-match (rx (syntax symbol)) (string last-command-event)))))
 
 (defun sotlisp--function-quote-p ()
