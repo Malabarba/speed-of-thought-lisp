@@ -268,6 +268,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("dr" . "delete-region ")
     ("dv" . "defvar $ t\n  \"\"")
     ("e" . "error \"$\"")
+    ("ef" . "executable-find ")
     ("efn" . "expand-file-name ")
     ("eol" . "end-of-line")
     ("f" . "format \"$\"")
