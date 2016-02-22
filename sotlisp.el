@@ -366,6 +366,8 @@ The space char is not included.  Any \"$\" are also removed."
     ("sw" . "selected-window$")
     ("syp" . "symbolp ")
     ("tap" . "thing-at-point 'symbol")
+    ("tf" . "thread-first ")
+    ("tl" . "thread-last ")
     ("u" . "unless ")
     ("ul" . "up-list")
     ("up" . "unwind-protect\n(progn $)")
