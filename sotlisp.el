@@ -6,7 +6,7 @@
 ;; URL: https://github.com/Malabarba/speed-of-thought-lisp
 ;; Keywords: convenience, lisp
 ;; Package-Requires: ((emacs "24.1"))
-;; Version: 1.5.1
+;; Version: 1.5.2
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -469,7 +469,10 @@ If `speed-of-thought-mode' is already on, call ON."
                            #'comment-or-uncomment-sexp
                          #'sotlisp-comment-or-uncomment-sexp))
     ("\C-cf"    . sotlisp-find-or-define-function)
-    ("\C-cv"    . sotlisp-find-or-define-variable)))
+    ("\C-cv"    . sotlisp-find-or-define-variable))
+  (if sotlisp-mode
+      (abbrev-mode 1)
+    (kill-local-variable 'abbrev-mode)))
 
 (defun sotlisp-turn-on-everywhere ()
   "Call-once function to turn on sotlisp everywhere.
