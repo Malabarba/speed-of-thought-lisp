@@ -153,15 +153,31 @@ non-nil."
 (defvar sotlisp--needs-moving nil
   "Will `sotlisp--move-to-$' move point after insertion?")
 
+(defvar sotlisp--further-actions
+  '((?k . sotlisp--get-key-desc))
+  "Functions which may be called after expansion")
+
+(defun sotlisp--get-key-desc ()
+  (key-description (read-key-sequence-vector "Key: ")))
+
 (defun sotlisp--move-to-$ ()
   "Move backwards until `$' and delete it.
 Point is left where the `$' char was.  Does nothing if variable
-`sotlisp-mode' is nil."
+`sotlisp-mode' is nil.
+If `;<char>' is found after point, call function
+which is mapped to <char> in `sotlisp--further-actions'"
   (when (bound-and-true-p speed-of-thought-mode)
     (when sotlisp--needs-moving
       (setq sotlisp--needs-moving nil)
       (skip-chars-backward "^\\$")
-      (delete-char -1))))
+      (delete-char -1)
+      (when (eq (char-after) ?\;)
+        (let (fun)
+          (delete-char 1)
+          (setq fun (assoc-default (char-after)
+                                   sotlisp--further-actions))
+          (delete-char 1)
+          (insert (funcall fun)))))))
 
 (add-hook 'post-command-hook #'sotlisp--move-to-$ 'append)
 
@@ -295,7 +311,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("jos" . "just-one-space")
     ("jr" . "json-read$")
     ("jtr" . "jump-to-register ")
-    ("k" . "kbd \"$\"")
+    ("k" . "kbd \"$;k\"")
     ("kb" . "kill-buffer")
     ("kn" . "kill-new ")
     ("kp" . "keywordp ")
