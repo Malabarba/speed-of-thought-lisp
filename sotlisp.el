@@ -158,7 +158,9 @@ non-nil."
   "Functions which may be called after expansion")
 
 (defun sotlisp--get-key-desc ()
-  (key-description (read-key-sequence-vector "Key: ")))
+  (replace-regexp-in-string
+   "\"" "\\\\\""
+   (key-description (read-key-sequence-vector "Key: "))))
 
 (defun sotlisp--move-to-$ ()
   "Move backwards until `$' and delete it.
