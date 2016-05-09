@@ -102,7 +102,7 @@ Specially, avoids matching inside argument lists."
        (not (sotlisp--looking-back "(\\(defun\\s-+.*\\|\\(lambda\\|dolist\\|dotimes\\)\\s-+\\)("))
        (save-excursion
          (forward-char -1)
-         (condition-case er
+         (condition-case nil
              (progn
                (backward-up-list)
                (forward-sexp -1)
