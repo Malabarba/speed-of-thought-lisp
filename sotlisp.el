@@ -446,6 +446,8 @@ following way:
     :enable-function #'sotlisp--function-p)
   (puthash name expansion sotlisp--function-table))
 
+(abbrev-table-put emacs-lisp-mode-abbrev-table :regexp "\\([\\s_a-z0-9]+\\)")
+
 (defun sotlisp-erase-all-abbrevs ()
   "Undefine all abbrevs defined by `sotlisp'."
   (interactive)
