@@ -222,7 +222,7 @@ See `sotlisp-define-function-abbrev'."
           (skeleton-insert (cons "" expansion)))
         t)
        ((or (stringp expansion)
-	    (and (string-prefix-p "-" name)
+	    (and (string-match "\\`-[^-]" name)
 		 (setq feature (sotlisp--get-feature))))
 	(when feature (setq expansion
 			    (concat feature (thing-at-point 'symbol)
