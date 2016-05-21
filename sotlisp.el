@@ -127,6 +127,9 @@ Specially, avoids matching inside argument lists."
         (not (or (elt pps 3)
                  (elt pps 4)))))))
 
+(defun sotlisp--feature-abbrev-p ()
+  (eq (char-after) ?-))
+
 (defun sotlisp--function-p ()
   "Non-nil if point is at reasonable place for a function name.
 Returns non-nil if, after moving backwards by a sexp, either
@@ -134,10 +137,11 @@ Returns non-nil if, after moving backwards by a sexp, either
 non-nil."
   (save-excursion
     (ignore-errors
-      (skip-chars-backward (rx alnum))
+      (skip-syntax-backward "w_")
       (and (sotlisp--code-p)
            (or (sotlisp--function-form-p)
-               (sotlisp--function-quote-p))))))
+               (sotlisp--function-quote-p)
+	       (sotlisp--feature-abbrev-p))))))
 
 (defun sotlisp--whitespace-p ()
   "Non-nil if current `self-insert'ed char is whitespace."
@@ -197,22 +201,35 @@ space ahead."
 (defvar sotlisp--function-table (make-hash-table :test #'equal)
   "Table where function abbrev expansions are stored.")
 
+(defun sotlisp--get-feature ()
+  (save-excursion
+    (goto-char (point-min))
+    (when (search-forward-regexp "^(provide '" nil 'noerror)
+      (thing-at-point 'symbol))))
+
 (defun sotlisp--expand-function ()
   "Expand the function abbrev before point.
 See `sotlisp-define-function-abbrev'."
-  (let ((r (point)))
-    (skip-chars-backward (rx alnum))
+  (let ((r (point))
+	feature)
+    (skip-syntax-backward "w_")
     (let* ((name (buffer-substring (point) r))
            (expansion (gethash name sotlisp--function-table)))
       (cond
-       ((not expansion) (progn (goto-char r) nil))
        ((consp expansion)
         (delete-region (point) r)
         (let ((skeleton-end-newline nil))
           (skeleton-insert (cons "" expansion)))
         t)
-       ((stringp expansion)
-        (delete-region (point) r)
+       ((or (stringp expansion)
+	    (and (string-prefix-p "-" name)
+		 (setq feature (sotlisp--get-feature))))
+	(when feature (setq expansion
+			    (concat feature (thing-at-point 'symbol)
+				    (if (eq last-input-event ?-)
+					    ""
+					    " "))))
+	(delete-region (point) r)
         (if (sotlisp--function-quote-p)
             ;; After #' use the simple expansion.
             (insert (sotlisp--simplify-function-expansion expansion))
@@ -221,7 +238,10 @@ See `sotlisp-define-function-abbrev'."
           (when (string-match "\\$" expansion)
             (setq sotlisp--needs-moving t)))
         ;; Must be last.
-        (sotlisp--post-expansion-cleanup))))))
+        (sotlisp--post-expansion-cleanup))
+       	((not expansion)
+	(progn (goto-char r) nil))))))
+
 
 (put 'sotlisp--expand-function 'no-self-insert t)
 
