@@ -201,11 +201,17 @@ space ahead."
 (defvar sotlisp--function-table (make-hash-table :test #'equal)
   "Table where function abbrev expansions are stored.")
 
+(defvar sotlisp--current-feature nil)
+(make-variable-buffer-local 'sotlisp--current-feature)
+
 (defun sotlisp--get-feature ()
-  (save-excursion
-    (goto-char (point-min))
-    (when (search-forward-regexp "^(provide '" nil 'noerror)
-      (thing-at-point 'symbol))))
+  (unless sotlisp--current-feature
+    (setq sotlisp--current-feature
+	  (save-excursion
+	    (goto-char (point-min))
+	    (when (search-forward-regexp "^(provide '" nil 'noerror)
+	      (thing-at-point 'symbol)))))
+  sotlisp--current-feature)
 
 (defun sotlisp--expand-function ()
   "Expand the function abbrev before point.
