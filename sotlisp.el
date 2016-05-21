@@ -138,10 +138,10 @@ non-nil."
   (save-excursion
     (ignore-errors
       (skip-syntax-backward "w_")
-      (and (sotlisp--code-p)
-           (or (sotlisp--function-form-p)
-               (sotlisp--function-quote-p)
-	       (sotlisp--feature-abbrev-p))))))
+      (or (sotlisp--feature-abbrev-p)
+	  (and (sotlisp--code-p)
+	       (or (sotlisp--function-form-p)
+		   (sotlisp--function-quote-p)))))))
 
 (defun sotlisp--whitespace-p ()
   "Non-nil if current `self-insert'ed char is whitespace."
