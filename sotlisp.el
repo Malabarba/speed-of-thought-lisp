@@ -88,7 +88,8 @@
   "Non-nil if this buffer auto-inserts parentheses."
   (or (bound-and-true-p electric-pair-mode)
       (bound-and-true-p paredit-mode)
-      (bound-and-true-p smartparens-mode)))
+      (bound-and-true-p smartparens-mode)
+      (bound-and-true-p lispy-mode)))
 
 (defun sotlisp--looking-back (regexp)
   (string-match
