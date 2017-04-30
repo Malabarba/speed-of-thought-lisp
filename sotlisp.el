@@ -43,7 +43,7 @@
 ;; place where you would use a function, so hitting SPC after "(r"
 ;; expands to "(require '", but hitting SPC after "(delete-region r"
 ;; will NOT expand the `r', because that's obviously not a function.
-;; Furtheromre, "#'r" will expand to "#'require" (note how it ommits
+;; Furthermore, "#'r" will expand to "#'require" (note how it omits
 ;; that extra quote, since it would be useless here).
 ;;
 ;;; Commands
@@ -65,7 +65,7 @@
 ;; - C-c v :: Same, but for variable.
 ;;
 ;; With these commands, you just write your code as you think of it.  Once
-;; you hit a "stop-point" of sorts in your tought flow, you hit `C-c f/v`
+;; you hit a "stop-point" of sorts in your thought flow, you hit `C-c f/v`
 ;; on any undefined functions/variables, write their definitions, and hit
 ;; `C-u C-SPC` to go back to the main function.
 ;;
@@ -88,7 +88,8 @@
   "Non-nil if this buffer auto-inserts parentheses."
   (or (bound-and-true-p electric-pair-mode)
       (bound-and-true-p paredit-mode)
-      (bound-and-true-p smartparens-mode)))
+      (bound-and-true-p smartparens-mode)
+      (bound-and-true-p lispy-mode)))
 
 (defun sotlisp--looking-back (regexp)
   (string-match
