@@ -21,7 +21,7 @@ However, these are defined in a way such that they ONLY expand in a
 place where you would use a function, so hitting SPC after `(r`
 expands to `(require '`, but hitting SPC after `(delete-region r` will
 NOT expand the `r`, because that's obviously not a function.
-Furtheromre, `#'r` will expand to `#'require` (note how it omits that
+Furthermore, `#'r` will expand to `#'require` (note how it omits that
 extra quote, since it would be useless here).
 
 ## Commands
