@@ -135,7 +135,7 @@ Returns non-nil if, after moving backwards by a sexp, either
 non-nil."
   (save-excursion
     (ignore-errors
-      (and (sotlisp--whitespace-char-p last-command-event)
+      (and (not (string-match (rx (syntax symbol)) (string last-command-event)))
            (sotlisp--code-p)
            (progn
              (skip-chars-backward (rx alnum))
