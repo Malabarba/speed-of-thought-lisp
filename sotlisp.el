@@ -135,10 +135,12 @@ Returns non-nil if, after moving backwards by a sexp, either
 non-nil."
   (save-excursion
     (ignore-errors
-      (skip-chars-backward (rx alnum))
-      (and (sotlisp--code-p)
-           (or (sotlisp--function-form-p)
-               (sotlisp--function-quote-p))))))
+      (and (sotlisp--whitespace-char-p last-command-event)
+           (sotlisp--code-p)
+           (progn
+             (skip-chars-backward (rx alnum))
+             (or (sotlisp--function-form-p)
+                 (sotlisp--function-quote-p)))))))
 
 (defun sotlisp--whitespace-p ()
   "Non-nil if current `self-insert'ed char is whitespace."
