@@ -109,7 +109,7 @@ Specially, avoids matching inside argument lists."
                (forward-sexp -1)
                (not
                 (looking-at-p (rx (* (or (syntax word) (syntax symbol) "-"))
-                                  "let" symbol-end))))
+                                  "let" (? "*") symbol-end))))
            (error t)))
        (not (string-match (rx (syntax symbol)) (string last-command-event)))))
 
