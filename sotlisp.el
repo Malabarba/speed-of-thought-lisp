@@ -100,7 +100,12 @@
   "Non-nil if point is at the start of a sexp.
 Specially, avoids matching inside argument lists."
   (and (eq (char-before) ?\()
-       (not (sotlisp--looking-back "(\\(defun\\s-+.*\\|\\(lambda\\|dolist\\|dotimes\\)\\s-+\\)("))
+       (not (sotlisp--looking-back
+             (rx (or (seq (? "cl-") (or "defun" "defmacro" "defsubst") (? "*")
+                          symbol-end (* any))
+                     (seq (or "lambda" "dolist" "dotimes")
+                          symbol-end (+ (syntax whitespace))))
+                 "(")))
        (save-excursion
          (forward-char -1)
          (condition-case nil
