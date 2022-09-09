@@ -81,6 +81,11 @@
 ;;   (with-temp-buffer (insert text))
 
 ;;; Code:
+(defgroup speed-of-thought-lisp nil
+  "Write Lisp at the speed of thought."
+  :prefix "sotlisp-"
+  :group 'lisp)
+
 (require 'skeleton)
 
 ;;; Predicates
@@ -276,6 +281,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("dff" . "defface $ \n  '((t))\n  \"\"\n  ")
     ("dfv" . "defvar $ t\n  \"\"")
     ("dk" . "define-key ")
+    ("dkm" . ("define-key map " (format "(kbd %S) #'" (key-description (read-key-sequence-vector "Key: ")))))
     ("dl" . "dolist (it $)")
     ("dt" . "dotimes (it $)")
     ("dmp" . "derived-mode-p '")
@@ -298,6 +304,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("fu" . "funcall ")
     ("fw" . "forward-word 1")
     ("g" . "goto-char ")
+    ("gbc" . "get-buffer-create \"$\"")
     ("gc" . "goto-char ")
     ("gsk" . "global-set-key ")
     ("i" . "insert ")
@@ -379,11 +386,13 @@ The space char is not included.  Any \"$\" are also removed."
     ("ssnp" . "substring-no-properties ")
     ("stb" . "switch-to-buffer ")
     ("sw" . "selected-window$")
+    ("swe" . "save-window-excursion")
     ("syp" . "symbolp ")
     ("tap" . "thing-at-point 'symbol")
     ("tf" . "thread-first ")
     ("tl" . "thread-last ")
     ("u" . "unless ")
+    ("ue" . "user-error \"$\"")
     ("ul" . "up-list")
     ("up" . "unwind-protect\n(progn $)")
     ("urp" . "use-region-p$")
@@ -460,7 +469,7 @@ function in this hook should do.")
 
 ;;;###autoload
 (define-minor-mode speed-of-thought-mode
-  nil nil nil nil
+  "Globalized Speed of Thought Mode"  
   :global t
   (run-hooks (if speed-of-thought-mode
                  'speed-of-thought-turn-on-hook
@@ -477,7 +486,8 @@ If `speed-of-thought-mode' is already on, call ON."
 
 ;;; The local minor-mode
 (define-minor-mode sotlisp-mode
-  nil nil " SoT"
+  "Local mode for editing Lisp at the speed of thought."
+  :lighter " SoT"
   `(([M-return] . sotlisp-newline-and-parentheses)
     ([C-return] . sotlisp-downlist-newline-and-parentheses)
     (,(kbd "C-M-;") . ,(if (fboundp 'comment-or-uncomment-sexp)
