@@ -309,6 +309,7 @@ The space char is not included.  Any \"$\" are also removed."
     ("gsk" . "global-set-key ")
     ("i" . "insert ")
     ("ie" . "ignore-errors ")
+    ("ifl" . "insert-file-literally \"$\"")
     ("ii" . "interactive")
     ("il" . "if-let (($))")
     ("ir" . "indent-region ")
@@ -412,14 +413,14 @@ The space char is not included.  Any \"$\" are also removed."
 (defun sotlisp-define-function-abbrev (name expansion)
   "Define a function abbrev expanding NAME to EXPANSION.
 This abbrev will only be expanded in places where a function name is
-sensible.  Roughly, this is right after a `(' or a `#''.
+sensible.  Roughly, this is right after a `(' or a `#'.
 
 If EXPANSION is any string, it doesn't have to be the just the
 name of a function.  In particular:
   - if it contains a `$', this char will not be inserted and
     point will be moved to its position after expansion.
   - if it contains a space, only a substring of it up to the
-first space is inserted when expanding after a `#'' (this is done
+first space is inserted when expanding after a `#' (this is done
 by defining two different abbrevs).
 
 For instance, if one defines
@@ -428,7 +429,7 @@ For instance, if one defines
 then triggering `expand-abbrev' after \"d\" expands in the
 following way:
    (d    => (delete-char 1
-   #'d   => #'delete-char"
+   #\\='d   => #\\='delete-char"
   (define-abbrev emacs-lisp-mode-abbrev-table
     name t #'sotlisp--expand-function
     ;; Don't override user abbrevs
@@ -488,6 +489,7 @@ If `speed-of-thought-mode' is already on, call ON."
 (define-minor-mode sotlisp-mode
   "Local mode for editing Lisp at the speed of thought."
   :lighter " SoT"
+  :keymap
   `(([M-return] . sotlisp-newline-and-parentheses)
     ([C-return] . sotlisp-downlist-newline-and-parentheses)
     (,(kbd "C-M-;") . ,(if (fboundp 'comment-or-uncomment-sexp)
