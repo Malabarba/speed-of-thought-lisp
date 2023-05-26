@@ -171,13 +171,12 @@ non-nil."
   "Move backwards until `$' and delete it.
 Point is left where the `$' char was.  Does nothing if variable
 `sotlisp-mode' is nil."
-  (when (bound-and-true-p speed-of-thought-mode)
-    (when sotlisp--needs-moving
-      (setq sotlisp--needs-moving nil)
-      (skip-chars-backward "^\\$")
-      (delete-char -1))))
-
-(add-hook 'post-command-hook #'sotlisp--move-to-$ 'append)
+  (remove-hook 'post-command-hook #'sotlisp--move-to-$ 'local)
+  (when (and (bound-and-true-p speed-of-thought-mode)
+             sotlisp--needs-moving)
+    (setq sotlisp--needs-moving nil)
+    (when (search-backward "$" last-abbrev-location 'noerror)
+      (delete-char 1))))
 
 (defun sotlisp--maybe-skip-closing-paren ()
   "Move past `)' if variable `electric-pair-mode' is enabled."
@@ -232,6 +231,7 @@ See `sotlisp-define-function-abbrev'."
           ;; Inside a form, use the full expansion.
           (insert expansion)
           (when (string-match "\\$" expansion)
+            (add-hook 'post-command-hook #'sotlisp--move-to-$ nil 'local)
             (setq sotlisp--needs-moving t)))
         ;; Must be last.
         (sotlisp--post-expansion-cleanup))))))
